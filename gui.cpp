@@ -5,7 +5,7 @@
 #include "SDL.h"
 #include <math.h>
 
-#include "graphics.h"
+#include "gui.h"
 #include "substratum.h"
 #include "vector3.h"
 
@@ -18,8 +18,19 @@ using namespace std;
 
 #include "global.h"
 
-graphics::graphics()
+gui::gui()
 {
+
+  this->slow = false;
+  this->show = true;
+  isActive = true;
+  wantQuit = false;
+
+  int i;
+  for( i=0; i < SDLK_LAST; i++)
+    keyboard[i] = false;
+
+
   surface = NULL;
   cameraPos.assign(0.f,-10.f,-10.f);
   cameraRot.assign(45.f,0.f,0.f);
@@ -33,7 +44,7 @@ graphics::graphics()
       fprintf( stderr, "[ %s , %d ] Video initialization failed: %s\n",
 	       __FILE__, __LINE__, 
 	       SDL_GetError( ) );
-      this->~graphics();
+      this->~gui();
       exit( 1 );
     }
 
@@ -45,7 +56,7 @@ graphics::graphics()
       fprintf( stderr, "[ %s , %d ] Video query failed: %s\n",
 	       __FILE__, __LINE__, 
 	       SDL_GetError( ) );
-      this->~graphics();
+      this->~gui();
       return;
       //exit( 1 );
     }
@@ -79,7 +90,7 @@ graphics::graphics()
       fprintf( stderr,  "[ %s , %d ]Video mode set failed: %s\n", 
 	       __FILE__, __LINE__, 
 	       SDL_GetError( ) );
-      this->~graphics();
+      this->~gui();
       return;
       //exit( 1 );
     }
@@ -98,7 +109,7 @@ graphics::graphics()
 }
 
 
-graphics::~graphics(){
+gui::~gui(){
   glDeleteTextures(1, &texFloor );
 
   /* clean up the window */
@@ -108,7 +119,7 @@ graphics::~graphics(){
 
 
 /* function to reset our viewport after a window resize */
-void graphics::resizeWindow( int width, int height )
+void gui::resizeWindow( int width, int height )
 {
   surface = SDL_SetVideoMode( width,
 			      height,
@@ -117,7 +128,7 @@ void graphics::resizeWindow( int width, int height )
     {
       fprintf( stderr, "[ %s , %d ] Could not get a surface after resize: %s\n",
 	       __FILE__, __LINE__, SDL_GetError( ) );
-      this->~graphics();
+      this->~gui();
       exit( 1 );
     }
 
@@ -154,7 +165,7 @@ void graphics::resizeWindow( int width, int height )
 
 
 /* general OpenGL initialization function */
-void graphics::initGL( GLvoid )
+void gui::initGL( GLvoid )
 {
 
   glEnable(GL_CULL_FACE);
@@ -192,7 +203,7 @@ void graphics::initGL( GLvoid )
 
 
 
-GLuint graphics::createBox()
+GLuint gui::createBox()
 {
 
   boxDL = glGenLists(1);
@@ -328,7 +339,7 @@ GLuint graphics::createBox()
 
 
 
-void graphics::createFloor()
+void gui::createFloor()
 {
   SDL_Surface *temp;	//This will help get the pixel data for our texture
  
@@ -416,7 +427,7 @@ void graphics::createFloor()
 
 
 
-void graphics::toggleFullScreen(){
+void gui::toggleFullScreen(){
   SDL_WM_ToggleFullScreen( surface );
 }
 
@@ -425,7 +436,7 @@ void graphics::toggleFullScreen(){
 
 
 
-void graphics::drawBox()
+void gui::drawBox()
 {
   /*float mat_ambient[] = { 0.8, 0.8, 0.8, 1.0 };
   float mat_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
@@ -436,21 +447,21 @@ void graphics::drawBox()
 }
 
 
-void graphics::moveCamera( float x, float y, float z ){
+void gui::moveCamera( float x, float y, float z ){
   cameraPos.x += (sin(cameraRot.y*PI/180)*z + cos(cameraRot.y*PI/180)*x);
   cameraPos.y += y;
   cameraPos.z += (-cos(cameraRot.y*PI/180)*z + sin(cameraRot.y*PI/180)*x);
 
 }
 
-void graphics::rotateCamera( float x, float y, float z ){
+void gui::rotateCamera( float x, float y, float z ){
   cameraRot.x += x;
   cameraRot.y += y;
   cameraRot.z += z;
 }
 
 
-void graphics::setCamera( vector3 pos, vector3 rot ){
+void gui::setCamera( vector3 pos, vector3 rot ){
   cameraPos = pos;
   cameraRot = rot;
 }
@@ -469,7 +480,7 @@ static void matrix_ODEtoGL(float* M, const dReal* p, const dReal* R)
 
 
 
-void graphics::drawSubstratum( substratum* obj )
+void gui::drawSubstratum( substratum* obj )
 {
   //int type;
   dReal spos[3];
@@ -537,7 +548,7 @@ void graphics::drawSubstratum( substratum* obj )
 
 
 
-void graphics::drawScene( const vector< substratum *>* objs )
+void gui::drawScene( const vector< substratum *>* objs )
 {
   int i;
   /* rotational vars for the triangle and quad, respectively */
@@ -609,4 +620,162 @@ void graphics::drawScene( const vector< substratum *>* objs )
   /* Decrease The Rotation Variable For The Quad     ( NEW ) */
   rquad -=0.15f;
 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void gui::handleKeyPress( SDL_keysym *keysym ){
+
+  if( keysym->sym == SDLK_F1 )
+    this->toggleFullScreen();
+
+  if( keysym->sym == SDLK_F2 )
+    this->show = !this->show;
+
+  keyboard[keysym->sym] = true;
+
+  if( keyboard[SDLK_p] )
+    slow = !slow;
+}
+
+
+void gui::handleKeyUp( SDL_keysym *keysym ){
+  keyboard[keysym->sym] = false;
+}
+
+
+
+void gui::setCreaturePos( vector3 pos ){
+  creaturePos = pos;
+}
+
+
+void gui::handleKeys(){
+  float walk_delta, rot_delta;
+
+  walk_delta = WALK_DELTA;
+  rot_delta = ROT_DELTA;
+
+
+  if( keyboard[SDLK_g] ){
+    this->setCamera( (vector3(0.f,-15.f,-15.f) - creaturePos), vector3(45.0f,0.f,0.f));
+  }
+
+
+  if( keyboard[SDLK_UP] )
+    this->moveCamera(0,0,-walk_delta);
+
+    
+  if( keyboard[SDLK_LSHIFT] ){
+    walk_delta *= 2;
+    rot_delta *=2;
+  }
+
+  if( keyboard[SDLK_ESCAPE] ){
+    if( !show )
+      wantQuit = true;
+    else
+      show = false;
+  }
+
+
+  if( keyboard[SDLK_UP] )
+    this->moveCamera(0,0,-walk_delta);
+
+  if( keyboard[SDLK_DOWN] )
+    this->moveCamera(0,0,walk_delta);
+
+  if( keyboard[SDLK_a] )
+    this->moveCamera(walk_delta,0,0);
+
+  if( keyboard[SDLK_d] )
+    this->moveCamera(-walk_delta,0,0);
+
+  if( keyboard[SDLK_w] )
+    this->moveCamera(0,-walk_delta,0);
+
+  if( keyboard[SDLK_s] )
+    this->moveCamera(0,walk_delta,0);
+
+
+  if( keyboard[SDLK_z] )
+    this->rotateCamera(-rot_delta,0,0);
+
+  if( keyboard[SDLK_x] )
+    this->rotateCamera(rot_delta,0,0);
+
+  if( keyboard[SDLK_LEFT] )
+    this->rotateCamera(0,-rot_delta,0);
+
+  if( keyboard[SDLK_RIGHT] )
+    this->rotateCamera(0,rot_delta,0);
+
+}
+
+
+
+void gui::handleEvents(){
+
+  /* used to collect events */
+  SDL_Event event;
+
+  /* handle the events in the queue */
+
+  while ( SDL_PollEvent( &event ) )
+    {
+      switch( event.type )
+	{
+	case SDL_ACTIVEEVENT:
+	  /* Something's happend with our focus
+	   * If we lost focus or we are iconified, we
+	   * shouldn't draw the screen
+	   */
+	  if ( event.active.gain == 0 )
+	    isActive = false;
+	  else
+	    isActive = true;
+	  break;			    
+	case SDL_VIDEORESIZE:
+	  /* handle resize event */
+	  this->resizeWindow( event.resize.w, event.resize.h );
+	  break;
+	case SDL_KEYDOWN:
+	  /* handle key presses */
+	  handleKeyPress( &event.key.keysym );
+	  break;
+	case SDL_KEYUP:
+	  /* handle key presses */
+	  handleKeyUp( &event.key.keysym );
+	  break;
+	case SDL_QUIT:
+	  /* handle quit requests */
+	  wantQuit = true;
+	  break;
+	default:
+	  break;
+	}
+    }
+  handleKeys();
+
+  //if( slow )
+  //SDL_Delay(10);
+  
 }

@@ -49,6 +49,35 @@ class gui {
   void setCamera( vector3 pos, vector3 rot );
 
 
+
+
+
+  void handleEvents();
+  void setCreaturePos( vector3 pos );
+
+  /* determines if the application window is active or
+     is in background  */
+  bool isActive;
+
+  /* Some quit request ? */
+  bool wantQuit;
+
+  bool show; // want to show the creature redered in screen ?
+  bool slow;
+
+ private:
+  vector3 creaturePos;
+
+  /* store keyboard state */
+  bool keyboard[SDLK_LAST];
+
+  void handleKeyPress( SDL_keysym *keysym );
+  void handleKeyUp( SDL_keysym *keysym );
+  void handleKeys();
+
+
+
+
  private:
 
   GLuint texFloor;		//This is our texture
