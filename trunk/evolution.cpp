@@ -38,6 +38,7 @@ evolution::evolution(){
     pop[i].body_gen = NULL;
   }
   sim = new simulate();
+
   for(int i=0; i< N_POP; i++) {
     pop[i].body_gen = createRandomMorf();
   }
@@ -57,6 +58,9 @@ evolution::evolution(unsigned int seed){
   }
 }
 
+
+
+
 evolution::evolution(unsigned int seed, int selectionType){
 
   srand(seed);
@@ -65,6 +69,20 @@ evolution::evolution(unsigned int seed, int selectionType){
   for(int i=0; i< N_POP*2; i++) {
     pop[i].body_gen = NULL;
   }
+  /*
+  pop[0].body_gen = createRandomMorf();
+  pop[0].body_gen->writeTree( pop[0].body_gen, NULL );
+  //delete pop[0].body_gen;
+
+  pop[1].body_gen = new morf_node();
+  pop[1].body_gen->readTree( pop[1].body_gen, NULL );
+
+  if( pop[1].body_gen->compareTree( pop[1].body_gen, pop[0].body_gen ) )
+    printf("FFFFFFFFFFFFOOOOOOOOOOOOODDDDDDDDDDDEEEEEEEEEEEUUUUUUU\n");
+  else
+    printf("IGUALLLLLLLLL\n");
+  exit(0);
+  */
   sim = new simulate();
   for(int i=0; i< N_POP; i++) {
     pop[i].body_gen = createRandomMorf();
@@ -81,7 +99,6 @@ evolution::~evolution(){
 
 void evolution::destroyInd( individual ind ){
   if( ind.body_gen ){
-    printf( " deleting ind  0x%X\n",ind.body_gen ) ;
     delete ind.body_gen;
     ind.body_gen = NULL;
   }
@@ -90,7 +107,6 @@ void evolution::destroyInd( individual ind ){
 void evolution::destroyPop( individual dpop[N_POP*2] ){
   for(int i=0; i< N_POP*2; i++) {
     if( dpop[i].body_gen ){
-      printf( " deleting [i = %d]  0x%X\n",i, dpop[i].body_gen ) ;
       delete dpop[i].body_gen;
       dpop[i].body_gen = NULL;
     }
@@ -296,25 +312,6 @@ morf_node* evolution::createRandomMorfAux(int* numNodes ){
 
   return m;
 }
-
-
-morf_node* evolution::duplicateMorf( morf_node* dad ){
-  morf_node* mnode, *sub;
-  
-  mnode = new morf_node( dad );
-
-  int size = dad->subnodes.size();
-  for( int i = 0; i < size; i ++ ){
-
-    sub = duplicateMorf( dad->subnodes[i] );
-
-    mnode->subnodes.push_back( sub );
-  }
-
-  return mnode;
-}
-
-
 
 
 
@@ -728,97 +725,48 @@ void evolution::mutateAnnRecursive(morf_tree tree, morf_tree result) {
 }
 
 
-void evolution::numNodes(morf_tree tree, int *num) {
-  int i;
-
-  if (tree==NULL) return;
-
-  (*num)++;
-
-  for (i=0;i<tree->subnodes.size();i++)
-    numNodes(tree->subnodes[i],num);
-}
-
-
-// This function returns the node at position pos.
-// *p must be initialized with zero.
-// It returns the node Son at position Pos and his Dad.
-// The position count begins in 1 (one) and is like a deep-search in the tree.
-// The root-node is the number 1
-void evolution::position(morf_tree tree, int pos, int* p, morf_tree* dad, morf_tree* son, int* son_index) {
-  int i;
-
-  if (tree==NULL || (*p) >= pos ) return;
-
-  if (pos <= 1 ){// must never reach this case, 
-                 // because the One node is the root, so it has no dad
-
-    (*dad) = tree;
-    (*son) = tree;
-    (*son_index) = 0;
-  }
-
-  (*p)++;
-  (*son) = tree;
-
-  if( *p == pos ) return;
-
-  for (i=0;i<tree->subnodes.size();i++){
-    (*dad) = tree;
-    (*son_index) = i;
-    position(tree->subnodes[i],pos,p,dad,son,son_index);
-    if(*p >= pos) break;
-  }
-}
-
-
 
 void evolution::mutateMorf_cutAndPaste(morf_tree tree) {
-  int pos, size, tmp, son_index;
+  int pos, size, son_index;
   morf_tree dad, son, dad2, son2;
 
   /* Checks whether we should mutate this Morf at all  */
   if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_MUTATE_MORF_CUTANDPASTE)) return;
 
-
-  size = 0;
-  numNodes(tree,&size);
+  size = tree->numNodes();
   if( size <= 1 ) return;
   pos = 2 + (int)((size-1) * (double)rand()/(RAND_MAX+1.0));  
 
-  tmp = 0;
-  position(tree, pos, &tmp, &dad, &son, &son_index);
+
+  tree->position(pos, &dad, &son, &son_index);
 
   dad->subnodes.erase( dad->subnodes.begin() + son_index ); //remove the tree Son from Dad
 
-  size = 0;
-  numNodes(tree,&size);
+  size = tree->numNodes();
   pos = 1 + (int)((size) * (double)rand()/(RAND_MAX+1.0));  
 
   if( pos == 1 ){
     tree->subnodes.push_back( son ); //insert the removed tree at another place
   }else{
-    tmp = 0;
-    position(tree, pos, &tmp, &dad2, &son2, &son_index);
+    tree->position( pos, &dad2, &son2, &son_index);
     son2->subnodes.push_back( son ); //insert the removed tree at another place
   }
 }
 
 void evolution::mutateMorf_delete(morf_tree tree) {
-  int pos, size, tmp, son_index;
+  int pos, size, son_index;
   morf_tree dad, son;
 
   /* Checks whether we should mutate this Morf at all  */
   if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_MUTATE_MORF_DELETE)) return;
 
 
-  size = 0;
-  numNodes(tree,&size);
+  size = tree->numNodes();
   if( size <= MINNODES ) return;
   pos = 2 + (int)((size-1) * (double)rand()/(RAND_MAX+1.0));  
 
-  tmp = 0;
-  position(tree, pos, &tmp, &dad, &son, &son_index);
+
+  tree->position( pos, &dad, &son, &son_index);
 
   dad->subnodes.erase( dad->subnodes.begin() + son_index ); //remove the tree Son from Dad
 
@@ -827,15 +775,14 @@ void evolution::mutateMorf_delete(morf_tree tree) {
 
 
 void evolution::mutateMorf_create(morf_tree tree) {
-  int pos, size, tmp, son_index;
+  int pos, size, son_index;
   morf_tree created_morf, dad2, son2;
 
   /* Checks whether we should mutate this Morf at all  */
   if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_MUTATE_MORF_CREATE)) return;
 
 
-  size = 0;
-  numNodes(tree,&size);
+  size = tree->numNodes();
 
   int numNodes = 1+(int)((MAXNODES-size) * (rand() / ((double)RAND_MAX + 1.0)));
   if( (numNodes+size) >= MAXNODES ) return;
@@ -847,8 +794,8 @@ void evolution::mutateMorf_create(morf_tree tree) {
   if( pos == 1 ){
     tree->subnodes.push_back( created_morf ); //insert the removed tree at another place
   }else{
-    tmp = 0;
-    position(tree, pos, &tmp, &dad2, &son2, &son_index);
+
+    tree->position(pos, &dad2, &son2, &son_index);
     son2->subnodes.push_back( created_morf ); //insert the removed tree at another place
   }
 }
@@ -1223,11 +1170,11 @@ gnuplot logging at %s\n",
   generation = 0;
   // do it:
   
-  while( generation < 2 ){
+  while( 1 ){
   
     for(i=0; i< N_POP; i++){
 
-      pop[i+N_POP].body_gen = duplicateMorf( pop[i].body_gen );
+      pop[i+N_POP].body_gen = pop[i].body_gen->duplicate();
 
       mutateBoxRecursive(pop[i].body_gen, pop[i+N_POP].body_gen);
       mutateAnnRecursive(pop[i].body_gen, pop[i+N_POP].body_gen);
@@ -1247,7 +1194,17 @@ gnuplot logging at %s\n",
       selectMix(pop);
     else if (Selection == 3)
       selectLongPairwise(pop);
+    
+    {
+      FILE * fd;
+
+      fd = fopen("population.evo", "w+");
+
+      for( i=0; i < N_POP; i++ )
+	pop[i].body_gen->writeTree(pop[i].body_gen, fd);
       
+      fclose(fd);
+    }
   }
 
   
