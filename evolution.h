@@ -16,8 +16,8 @@
 #define TAU4     1/(sqrt(2 * NN_SIZE))
 
 
-#define N_POP    2   /* 1-generation population size */
-#define BEST     1    /*  how many of the bests go to next gen at selectMix  */
+#define N_POP    30   /* 1-generation population size */
+#define BEST     10    /*  how many of the bests go to next gen at selectMix  */
 #define WORST    0    /*  how many of the worsts go to next gen at selectMix */
 /*  how many one should fight in selectLongPairwise    */
 #define OPPONENTS (int) ceil(0.3 * N_POP)
@@ -49,7 +49,7 @@
 #define DENSITY_VARIANCE_INIT_MAX 0.5   /* not used yet, box density is fixed */
 
 /* genotype */
-#define MAXNODES 4
+#define MAXNODES 6
 #define MINNODES 3
 
 /* Mutation constraints */
@@ -111,16 +111,12 @@ class evolution
   morf_node* createRandomMorf();
   morf_node* createRandomMorfAux(int* numNodes);
 
-  morf_node* duplicateMorf( morf_node* dad );
-
 
   void mutateBox(const morf_node* father, morf_node* child );
   void mutateBoxRecursive(morf_node *tree, morf_node *result);
   void changeFace(vector2* pos, unsigned char* face);
 
 
-  void numNodes(morf_tree tree, int *num);
-  void position(morf_tree tree, int pos, int* p, morf_tree* dad, morf_tree* son, int* son_index);
   void mutateMorf_cutAndPaste(morf_tree tree);
   void mutateMorf_delete(morf_tree tree);
   void mutateMorf_create(morf_tree tree);
