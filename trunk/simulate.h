@@ -6,8 +6,7 @@
 #include <ode/ode.h>
 
 
-#include "graphics.h"
-#include "events.h"
+#include "gui.h"
 
 #include "vector3.h"
 #include "substratum.h"
@@ -45,8 +44,7 @@ class simulate
   static dWorldID World;
   static dSpaceID Space;
   static dJointGroupID contactgroup;
-  events * evt;
-  graphics * gr;
+
 
  private:
 

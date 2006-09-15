@@ -16,8 +16,8 @@
 #define TAU4     1/(sqrt(2 * NN_SIZE))
 
 
-#define N_POP    10   /* 1-generation population size */
-#define BEST     5    /*  how many of the bests go to next gen at selectMix  */
+#define N_POP    2   /* 1-generation population size */
+#define BEST     1    /*  how many of the bests go to next gen at selectMix  */
 #define WORST    0    /*  how many of the worsts go to next gen at selectMix */
 /*  how many one should fight in selectLongPairwise    */
 #define OPPONENTS (int) ceil(0.3 * N_POP)
