@@ -30,8 +30,6 @@ simulate::simulate()
 
   //dWorldSetAutoDisableFlag(World, 1);
 
-  gr = new graphics();
-  evt = new events(gr);
 }
 
 
@@ -43,14 +41,12 @@ simulate::~simulate()
   
   dWorldDestroy(World);
 
-  delete gr;
-  delete evt;
 }
 
 
 
 void simulate::show( body* creature ){
-
+  /*
   int totalSteps = 0;
   evt->show = true;
 
@@ -64,36 +60,11 @@ void simulate::show( body* creature ){
 
     gr->drawScene( &creature->bodyParts );
 
-
-    /*    DEBUG FUCKING FOO SECTION 
-     
-    static float fu = 0;
-    fu += 0.005f;
-
-    //#define vol 0.125f
-    //#define F ((vol*vol)*16 + vol*60 + 20)
-    //float f1 = 500;  float f2 = 500;  float rateFactor[2];      
-    //creature->bodyParts[1]->getRateFactor( rateFactor );
-    //f1 *= rateFactor[0];
-    //f2 *= rateFactor[1];
-    //#define MAX_FORCE(vol) (2*(vol*vol*vol)+ 40*(vol*vol))  
-    static float F = MAX_FORCE(0.25);
-
-    F = 30;
-    //dJointAddUniversalTorques( creature->bodyParts[1]->jid, F, F);
-    //dJointAddUniversalTorques( creature->bodyParts[2]->jid, F, F);
-
-    dJointAddUniversalTorques( creature->bodyParts[1]->jid, F*sin(fu+3.14), F*cos(fu+3.14));
-    //dJointAddUniversalTorques( creature->bodyParts[2]->jid, F*cos(-fu), F*sin(-fu));
-    
-    */
-    
-
     creature->run( totalSteps );
     this->step();
-    //if( evt->slow ) this->step();
     totalSteps++;
   }
+  */
 }
 
 
@@ -105,12 +76,11 @@ float simulate::getFitness( body* creature ){
   int fitSteps = 0;
   float fitness = 0;
 
-  evt->show = false;
   vector3 oldpos, newpos;
   vector3 eoldpos, enewpos, creaturePos;
 
 
-  while( !evt->wantQuit ){
+  while( 1 ){
     if( totalSteps > TOTAL_STEPS )
       break;
 
@@ -126,8 +96,6 @@ float simulate::getFitness( body* creature ){
     }else{
       oldpos = creaturePos;
     }
-
-    evt->handleEvents();
 
     creature->run( totalSteps );
     collision_depth = 0;
@@ -146,15 +114,10 @@ float simulate::getFitness( body* creature ){
 
 void simulate::step()
 {
-  //dJointAddUniversalTorques( jid, sin(i)*10, cos(i)*10);
-
   dSpaceCollide(Space, 0, &collideCallback);
   //dWorldQuickStep(World, 0.05f );
 
-  if( evt->slow ) 
-    dWorldStep(World, 0.005f );
-  else
-    dWorldStep(World, 0.05f );
+  dWorldStep(World, 0.05f );
 
   dJointGroupEmpty(contactgroup);
 }

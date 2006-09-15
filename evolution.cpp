@@ -81,6 +81,7 @@ evolution::~evolution(){
 
 void evolution::destroyInd( individual ind ){
   if( ind.body_gen ){
+    printf( " deleting ind  0x%X\n",ind.body_gen ) ;
     delete ind.body_gen;
     ind.body_gen = NULL;
   }
@@ -89,6 +90,7 @@ void evolution::destroyInd( individual ind ){
 void evolution::destroyPop( individual dpop[N_POP*2] ){
   for(int i=0; i< N_POP*2; i++) {
     if( dpop[i].body_gen ){
+      printf( " deleting [i = %d]  0x%X\n",i, dpop[i].body_gen ) ;
       delete dpop[i].body_gen;
       dpop[i].body_gen = NULL;
     }
@@ -953,17 +955,6 @@ void evolution::selectPairwise( individual spop[N_POP*2] )
       else {
         s = k;
       }
-      /*
-        if( !spop[s].select ){
-        spop[s].select = true;
-        newpop[i] = spop[s];
-        }else{
-        spop[s].select = true;
-        newpop[i] = spop[s];
-
-        newpop[i].body_gen = duplicateMorf( spop[s].body_gen );
-        }
-      */
     }while( spop[s].select );
 
     spop[s].select = true;
@@ -979,6 +970,10 @@ void evolution::selectPairwise( individual spop[N_POP*2] )
   for(i=0; i< N_POP; i++){
     spop[i] = newpop[i];
   }
+  for(i=N_POP; i< N_POP*2; i++){
+    spop[i].body_gen = NULL;
+  }
+
 }
 
 /*
@@ -1011,6 +1006,7 @@ void evolution::selectLongPairwise( individual spop[N_POP*2] )
   for(i=0; i< N_POP; i++){
     destroyInd(spop[i]); // destroys the unused part
     spop[i] = spop [N_POP+i];
+    spop [N_POP+i].body_gen = NULL;
   }
 }
 
@@ -1025,6 +1021,7 @@ void evolution::selectElit( individual spop[N_POP*2] )
   for(i=0; i< N_POP; i++){
     destroyInd(spop[i]); // destroys the unused part
     spop[i] = spop [N_POP+i];
+    spop [N_POP+i].body_gen = NULL;
   }
 
 }
@@ -1083,6 +1080,11 @@ void evolution::selectMix( individual spop[N_POP*2] )
   for(i=0; i< N_POP; i++){
     spop[i] = newpop[i];
   }
+
+  for(i=N_POP; i< N_POP*2; i++){
+    spop[i].body_gen = NULL;
+  }
+
 }
 
 
@@ -1132,6 +1134,7 @@ void evolution::getFitness( individual fpop[N_POP*2] )
     delete phen;
 
     
+    /*
     if( sim->evt->show && firstTime == false){
       body* phen;
       phen = new body( sim->World, sim->Space, fpop[N_POP-j-1].body_gen );
@@ -1141,8 +1144,7 @@ void evolution::getFitness( individual fpop[N_POP*2] )
       j++;
       if( j >= N_POP ) j = 0;
     }
-    
-
+    */
   }
 
   meanFit = meanFit / (N_POP*2);
@@ -1221,7 +1223,7 @@ gnuplot logging at %s\n",
   generation = 0;
   // do it:
   
-  while( !sim->evt->wantQuit ){
+  while( generation < 2 ){
   
     for(i=0; i< N_POP; i++){
 
@@ -1237,16 +1239,15 @@ gnuplot logging at %s\n",
     getFitness( pop );
 
 
-    if( !sim->evt->wantQuit ) {
-      if (Selection == 0)
-        selectPairwise(pop);
-      if (Selection == 1)
-        selectElit(pop);
-      if (Selection == 2)
-        selectMix(pop);
-      if (Selection == 3)
-        selectLongPairwise(pop);
-      }
+    if (Selection == 0)
+      selectPairwise(pop);
+    else if (Selection == 1)
+      selectElit(pop);
+    else if (Selection == 2)
+      selectMix(pop);
+    else if (Selection == 3)
+      selectLongPairwise(pop);
+      
   }
 
   

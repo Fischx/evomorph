@@ -1,5 +1,3 @@
-#include "graphics.h"
-#include "events.h"
 #include "substratum.h"
 
 #include "simulate.h"

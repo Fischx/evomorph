@@ -2,7 +2,6 @@
 #include <ode/ode.h>
 
 
-#include "graphics.h"
 #include "substratum.h"
 #include "vector3.h"
 

@@ -21,6 +21,10 @@
 #define MIN_MSPF 1000/MAX_FPS
 
 
+#define WALK_DELTA 0.05f
+#define ROT_DELTA 0.3f
+
+
 using namespace std;
 
 
