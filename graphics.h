@@ -1,5 +1,5 @@
-#ifndef _GRAPHICS_H_
-#define _GRAPHICS_H_
+#ifndef _GUI_H_
+#define _GUI_H_
 
 
 #include <GL/gl.h>
@@ -24,11 +24,11 @@
 using namespace std;
 
 
-class graphics {
+class gui {
 
  public:
-  graphics();
-  ~graphics();
+  gui();
+  ~gui();
 
   void resizeWindow( int width, int height );
 
@@ -50,6 +50,8 @@ class graphics {
 
 
  private:
+
+  GLuint texFloor;		//This is our texture
 
 
   /* This is our SDL surface */

@@ -54,8 +54,6 @@ void simulate::show( body* creature ){
   int totalSteps = 0;
   evt->show = true;
 
-  //SDL_Delay(5);
-
   gr->setCamera((vector3(0.f,-15.f,-15.f) - creature->getPos()), vector3(45.f,0.f,0.f) );
 
   while( evt->show ){
