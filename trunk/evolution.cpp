@@ -1131,7 +1131,7 @@ void evolution::getFitness( individual fpop[N_POP*2] )
 
     delete phen;
 
-
+    
     if( sim->evt->show && firstTime == false){
       body* phen;
       phen = new body( sim->World, sim->Space, fpop[N_POP-j-1].body_gen );
@@ -1141,7 +1141,7 @@ void evolution::getFitness( individual fpop[N_POP*2] )
       j++;
       if( j >= N_POP ) j = 0;
     }
-
+    
 
   }
 

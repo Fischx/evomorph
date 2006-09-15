@@ -20,13 +20,12 @@ using namespace std;
 
 graphics::graphics()
 {
-
+  surface = NULL;
   cameraPos.assign(0.f,-10.f,-10.f);
   cameraRot.assign(45.f,0.f,0.f);
 
   /* this holds some info about our display */
   const SDL_VideoInfo *videoInfo;
-
 
   /* initialize SDL */
   if ( SDL_Init( SDL_INIT_VIDEO ) < 0 )
@@ -47,7 +46,8 @@ graphics::graphics()
 	       __FILE__, __LINE__, 
 	       SDL_GetError( ) );
       this->~graphics();
-      exit( 1 );
+      return;
+      //exit( 1 );
     }
 
   /* the flags to pass to SDL_SetVideoMode */
@@ -80,7 +80,8 @@ graphics::graphics()
 	       __FILE__, __LINE__, 
 	       SDL_GetError( ) );
       this->~graphics();
-      exit( 1 );
+      return;
+      //exit( 1 );
     }
 
   /* initialize OpenGL */
@@ -98,11 +99,10 @@ graphics::graphics()
 
 
 graphics::~graphics(){
-
-  //glDeleteTextures(1, &image);
+  glDeleteTextures(1, &texFloor );
 
   /* clean up the window */
-  SDL_Quit( );
+  SDL_Quit();
 
 }
 
@@ -330,7 +330,6 @@ GLuint graphics::createBox()
 
 void graphics::createFloor()
 {
-  GLuint image;		//This is our texture
   SDL_Surface *temp;	//This will help get the pixel data for our texture
  
   if ( (temp = SDL_LoadBMP("tile.bmp")) ) {
@@ -348,10 +347,10 @@ void graphics::createFloor()
     }    
         
     //Create the texture
-    glGenTextures(1, &image);
+    glGenTextures(1, &texFloor);
  
     //Load the texture
-    glBindTexture(GL_TEXTURE_2D, image);
+    glBindTexture(GL_TEXTURE_2D, texFloor);
  
     //Generate the texture
     glTexImage2D(GL_TEXTURE_2D, 0, 3, temp->w, temp->h, 0, GL_BGR, GL_UNSIGNED_BYTE, temp->pixels);
@@ -380,7 +379,7 @@ void graphics::createFloor()
   glEnable(GL_TEXTURE_2D);
  
   //Load the texture
-  glBindTexture(GL_TEXTURE_2D, image);
+  glBindTexture(GL_TEXTURE_2D, texFloor);
  
   glDisable( GL_CULL_FACE );
   glBegin(GL_QUADS);
