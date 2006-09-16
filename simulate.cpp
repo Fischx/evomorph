@@ -45,26 +45,24 @@ simulate::~simulate()
 
 
 
-void simulate::show( body* creature ){
-  /*
-  int totalSteps = 0;
-  evt->show = true;
+void simulate::show( body* creature, gui* g ){
+  /*  int totalSteps = 0;
+  g->show = true;
 
-  gr->setCamera((vector3(0.f,-15.f,-15.f) - creature->getPos()), vector3(45.f,0.f,0.f) );
+  g->setCamera((vector3(0.f,-15.f,-15.f) - creature->getPos()), vector3(45.f,0.f,0.f) );
 
-  while( evt->show ){
+  while( g->show ){
 
-    evt->setCreaturePos( creature->getPos() );
+    g->setCreaturePos( creature->getPos() );
 
-    evt->handleEvents();
+    g->handleEvents();
 
-    gr->drawScene( &creature->bodyParts );
+    g->drawScene( &creature->bodyParts );
 
     creature->run( totalSteps );
     this->step();
     totalSteps++;
-  }
-  */
+    }*/
 }
 
 
@@ -101,7 +99,7 @@ float simulate::getFitness( body* creature ){
     collision_depth = 0;
     this->step();
     if( collision_depth > 1 )
-      fitness -= 0.5*collision_depth;
+      fitness -= collision_depth;
 
     totalSteps++;
   }

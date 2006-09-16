@@ -171,7 +171,7 @@ void morf_node::readNode( morf_node* node, FILE* fd )
 
 
 
-void morf_node::readTreeAux(morf_node* tree, FILE* fd) 
+void morf_node::readTree(morf_node* tree, FILE* fd) 
 {
   int i, size;
 
@@ -184,7 +184,7 @@ void morf_node::readTreeAux(morf_node* tree, FILE* fd)
   for (i=0;i<size;i++){
     tree->subnodes.push_back( new morf_node() );
 
-    readTreeAux(tree->subnodes[i], fd);
+    readTree(tree->subnodes[i], fd);
   }
 }
 
@@ -198,7 +198,7 @@ void morf_node::readTree(morf_node* tree, const char* fileName )
   else
     fd = fopen(fileName, "r");
 
-  readTreeAux(tree, fd);
+  readTree(tree, fd);
 
   fclose(fd);
 }

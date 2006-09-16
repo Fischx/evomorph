@@ -43,13 +43,13 @@
 #define SIZE_VARIANCE_INIT_MAX    1.0
 #define POS_INIT_MAX              0.9999
 #define POS_VARIANCE_INIT_MAX     0.3
-#define ROT_VARIANCE_INIT_MAX     0.0
+#define ROT_VARIANCE_INIT_MAX     0.01
 
 #define DENSITY_INIT_MAX          10.0  /* not used yet, box density is fixed */
 #define DENSITY_VARIANCE_INIT_MAX 0.5   /* not used yet, box density is fixed */
 
 /* genotype */
-#define MAXNODES 6
+#define MAXNODES 7
 #define MINNODES 3
 
 /* Mutation constraints */
@@ -63,7 +63,7 @@
 #define PROB_MUTATE_BOX_SIZE         0.5
 #define PROB_MUTATE_JUNCT_POS        0.5
 #define PROB_MUTATE_JUNCT_POS_SELF   0.5
-#define PROB_MUTATE_JUNCT_ROT        0.0
+#define PROB_MUTATE_JUNCT_ROT        0.1
 
 #define PROB_MUTATE_MORF_CUTANDPASTE 0.1
 #define PROB_MUTATE_MORF_DELETE      0.01
