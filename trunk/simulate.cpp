@@ -46,7 +46,7 @@ simulate::~simulate()
 
 
 void simulate::show( body* creature, gui* g ){
-  /*  int totalSteps = 0;
+  int totalSteps = 0;
   g->show = true;
 
   g->setCamera((vector3(0.f,-15.f,-15.f) - creature->getPos()), vector3(45.f,0.f,0.f) );
@@ -62,7 +62,7 @@ void simulate::show( body* creature, gui* g ){
     creature->run( totalSteps );
     this->step();
     totalSteps++;
-    }*/
+  }
 }
 
 
