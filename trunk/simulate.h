@@ -33,8 +33,10 @@ class simulate
 
  public:
   float getFitness( body* creature );
-  void show( body* creature );
   void step();
+  void show( body* creature, gui* g );
+
+
 
   simulate();
   ~simulate();

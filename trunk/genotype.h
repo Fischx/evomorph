@@ -44,6 +44,8 @@ class morf_node{
 
   void readNode( morf_node* node, FILE* fd );
   void readTree(morf_node* tree, const char* fileName ) ;
+  void readTree(morf_node* tree, FILE* fd) ;
+
   int compareNode( morf_node* a, morf_node* b );
   int compareTree(morf_node* a, morf_node* b) ;
 
@@ -58,7 +60,6 @@ class morf_node{
  private:
   void positionAux( int pos, int* p, morf_node** dad, morf_node** son, int* son_index);
 
-  void readTreeAux(morf_node* tree, FILE* fd) ;
 
   void print_node();
 
