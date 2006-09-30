@@ -34,7 +34,6 @@ class simulate
  public:
   float getFitness( body* creature );
   void step();
-  void show( body* creature, gui* g );
 
 
 

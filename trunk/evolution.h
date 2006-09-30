@@ -68,6 +68,8 @@
 #define PROB_MUTATE_MORF_CUTANDPASTE 0.1
 #define PROB_MUTATE_MORF_DELETE      0.01
 #define PROB_MUTATE_MORF_CREATE      0.1
+#define PROB_MUTATE_MORF_DUPLICATE   0.1
+#define PROB_MUTATE_MORF_CHANGE_NN   0.1
 
 
 /* not recommended to mutate density!!! */
@@ -120,6 +122,10 @@ class evolution
   void mutateMorf_cutAndPaste(morf_tree tree);
   void mutateMorf_delete(morf_tree tree);
   void mutateMorf_create(morf_tree tree);
+
+  void mutateMorf_duplicate(morf_tree tree);
+  void mutateMorf_changeNN(morf_tree tree);
+
 
   /*
   void mutateMorf(morf_tree tree);

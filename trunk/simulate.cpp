@@ -18,7 +18,7 @@ simulate::simulate()
   
   dCreatePlane(Space, 0, 1, 0, 0);
   
-  dWorldSetGravity(World, 0, -1.0, 0);
+  dWorldSetGravity(World, 0, -9.0, 0);
 
   dWorldSetERP(World, 0.7);
 
@@ -45,25 +45,6 @@ simulate::~simulate()
 
 
 
-void simulate::show( body* creature, gui* g ){
-  int totalSteps = 0;
-  g->show = true;
-
-  g->setCamera((vector3(0.f,-15.f,-15.f) - creature->getPos()), vector3(45.f,0.f,0.f) );
-
-  while( g->show ){
-
-    g->setCreaturePos( creature->getPos() );
-
-    g->handleEvents();
-
-    g->drawScene( &creature->bodyParts );
-
-    creature->run( totalSteps );
-    this->step();
-    totalSteps++;
-  }
-}
 
 
 static float collision_depth = 0;
