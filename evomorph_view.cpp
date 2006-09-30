@@ -9,6 +9,29 @@
 
 #include "gui.h"
 
+
+void show( simulate* sim, body* creature, gui* g ){
+  int totalSteps = 0;
+  g->show = true;
+
+  g->setCamera((vector3(0.f,-15.f,-15.f) - creature->getPos()), vector3(45.f,0.f,0.f) );
+
+  while( g->show ){
+
+    g->setCreaturePos( creature->getPos() );
+
+    g->handleEvents();
+
+    g->drawScene( &creature->bodyParts );
+
+    creature->run( totalSteps );
+    sim->step();
+    totalSteps++;
+  }
+
+}
+
+
 int main( int argc, char **argv )
 {
   FILE * fd;
@@ -28,7 +51,7 @@ int main( int argc, char **argv )
 
     phen = new body( sim->World, sim->Space, mnode );
 
-    sim->show( phen, g );
+    show( sim, phen, g );
     delete phen;
     delete mnode;
 

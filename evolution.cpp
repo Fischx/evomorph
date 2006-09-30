@@ -802,6 +802,58 @@ void evolution::mutateMorf_create(morf_tree tree) {
 
 
 
+
+
+void evolution::mutateMorf_duplicate(morf_tree tree) {
+  int pos, size, son_index;
+  morf_tree duplicated_morf, dad, son, dad2, son2;
+
+  /* Checks whether we should mutate this Morf at all  */
+  if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_MUTATE_MORF_DUPLICATE)) return;
+
+
+  size = tree->numNodes();
+  if( size >= MAXNODES ) return;
+  pos = 1 + (int)((size) * (double)rand()/(RAND_MAX+1.0));  
+  tree->position( pos, &dad, &son, &son_index);
+  duplicated_morf = son->duplicate();
+
+
+  pos = 1 + (int)((size) * (double)rand()/(RAND_MAX+1.0));  
+  tree->position(pos, &dad2, &son2, &son_index);
+  son2->subnodes.push_back( duplicated_morf ); //insert the removed tree at another place
+  
+}
+
+
+
+
+void evolution::mutateMorf_changeNN(morf_tree tree) {
+  int pos, size, son_index;
+  morf_tree duplicated_morf, dad, son, dad2, son2;
+
+  /* Checks whether we should mutate this Morf at all  */
+  if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_MUTATE_MORF_CHANGE_NN)) return;
+
+
+  size = tree->numNodes();
+  pos = 1 + (int)((size) * (double)rand()/(RAND_MAX+1.0));  
+  tree->position( pos, &dad, &son, &son_index);
+
+  pos = 1 + (int)((size) * (double)rand()/(RAND_MAX+1.0));  
+  tree->position(pos, &dad2, &son2, &son_index);
+  
+  for( int i=0; i < NN_SIZE; i++){
+    son->ann.weight[i] = son2->ann.weight[i];
+    son->ann.variance[i] = son2->ann.variance[i];
+  }
+
+}
+
+
+
+
+
 /*
 void evolution::crossoverMorf(morf_tree dad, morf_tree mom, morf_tree son1, morf_tree son2) {
   int num_dad=0,num_mom=0,leftNodes;
@@ -1176,11 +1228,15 @@ gnuplot logging at %s\n",
 
       pop[i+N_POP].body_gen = pop[i].body_gen->duplicate();
 
+      // Apply mutation operators
       mutateBoxRecursive(pop[i].body_gen, pop[i+N_POP].body_gen);
       mutateAnnRecursive(pop[i].body_gen, pop[i+N_POP].body_gen);
       mutateMorf_cutAndPaste(pop[i+N_POP].body_gen);      
       mutateMorf_delete(pop[i+N_POP].body_gen);
       mutateMorf_create(pop[i+N_POP].body_gen);
+      mutateMorf_duplicate(pop[i+N_POP].body_gen);
+      mutateMorf_changeNN(pop[i+N_POP].body_gen);
+
     }
 
     getFitness( pop );
