@@ -249,7 +249,7 @@ float body::run( int time ){
       input[0] = dJointGetUniversalAngle1(bodyParts[i]->jid);
       input[1] = dJointGetUniversalAngle2(bodyParts[i]->jid);
       input[2] = bodyParts[i]->collide;
-      input[3] = time;
+      input[3] = sin(time*PI/(double)20);
       
       const dReal *R = dGeomGetRotation( bodyParts[i]->geom);
 
