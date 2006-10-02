@@ -32,17 +32,31 @@ void show( simulate* sim, body* creature, gui* g ){
 }
 
 
+#include <errno.h>
+#include <stdio.h>
+
+
 int main( int argc, char **argv )
 {
   FILE * fd;
   morf_node* mnode;
   simulate * sim;
   gui* g;
+
+  if( argc > 1 ){
+    fd = fopen(argv[1], "r");
+  }else{
+    fd = fopen("population.evo", "r");
+  }
+  if( !fd ){
+    printf("Could not open file: %s\n", argv[1] );
+    perror("");
+    exit(-1);
+  }
+
   sim = new simulate();
   g = new gui();
-
-  fd = fopen("population.evo", "r");
-
+  
   for( int i=0; i < N_POP; i++){
     body* phen;
 
