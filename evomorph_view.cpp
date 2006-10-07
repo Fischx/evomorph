@@ -81,23 +81,62 @@ morf_node* initDebugGen(){
 #endif
 
 
+void printUsage( const char* prog ){
+  printf("\nUsage: %s [-f POPULATION_FILE] [-m MIN_FITNESS]\n\n", prog );
+  exit(-1);
+}
+
+
+
 int main( int argc, char **argv )
 {
   FILE * fd;
   morf_node* mnode;
   simulate * sim;
   gui* g;
+  int minFit = -12345;
+  int go = -1;
 
-  if( argc > 1 ){
-    fd = fopen(argv[1], "r");
-  }else{
-    fd = fopen("population.evo", "r");
+  fd = 0;
+  for( int i=1; i<argc; i++ ){
+    if( !strcmp(argv[i], "-m") ){
+      if( i+1 >= argc )
+	printUsage(argv[0]);
+      minFit = atoi(argv[i+1]);
+      i++;
+    }
+
+    if( !strcmp(argv[i], "-f") ){
+      if( i+1 >= argc )
+	printUsage(argv[0]);
+      fd = fopen(argv[i+1], "r");
+      if( !fd ){
+	printf("Could not open file: %s\n", argv[i+1] );
+	perror("");
+	exit(-1);
+      }
+      i++;
+    }
+
+
+    if( !strcmp(argv[i], "-g") ){
+      if( i+1 >= argc )
+	printUsage(argv[0]);
+      go = atoi(argv[i+1]);
+      i++;
+    }
+
+
   }
+
+  if( !fd )
+    fd = fopen("population.evo", "r");
   if( !fd ){
-    printf("Could not open file: %s\n", argv[1] );
+    printf("Could not open file: %s\n", "population.evo" );
     perror("");
     exit(-1);
   }
+
 
   sim = new simulate();
   g = new gui();
@@ -117,8 +156,10 @@ int main( int argc, char **argv )
 
 #else
   for( int i=0; i < N_POP; i++){
+    float fit;
     body* phen;
 
+    g->handleEvents();
     if( g->wantQuit )
       break;
 
@@ -126,16 +167,19 @@ int main( int argc, char **argv )
     mnode = new morf_node();
     mnode->readTree(mnode, fd);
 
-    phen = new body( sim->World, sim->Space, mnode );
-
-    printf("Creature Fitness = %f \n", sim->getFitness( phen ) );
-
-    delete phen;
-
-    phen = new body( sim->World, sim->Space, mnode );
+    if( go == -1 || i >= go ){
+      phen = new body( sim->World, sim->Space, mnode );
+      fit = sim->getFitness( phen );
+      printf("Creature %d Fitness = %f \n", i, fit  );
+      delete phen;
   
-    show( sim, phen, g );
-    delete phen;
+      if( minFit == -12345 || fit >= minFit ){
+	phen = new body( sim->World, sim->Space, mnode );
+	show( sim, phen, g );
+	delete phen;
+      }
+    }
+
     delete mnode;
 
   }
