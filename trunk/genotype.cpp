@@ -54,6 +54,9 @@ morf_node::morf_node( vector3 size, int face, vector2 pos,
 
 }
 
+
+
+
 morf_node::~morf_node(){
   int size = subnodes.size();
 

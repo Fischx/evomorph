@@ -233,57 +233,6 @@ void evolution::initializeNode(morf_node* node)
 #include "global.h"
 morf_node* evolution::createRandomMorf(){
 
-  /* morf_node( vector3 size, int face, vector2 pos,
-	     int self_face, vector2 self_pos, 
-	     vector3 rot, float density, ann_genotype ann);
-  */
-  /*
-  ann_genotype ann;
-  morf_node *m1, *m2, *m3;
-
-  initializeAnn(&ann);
-  m1 = new morf_node(vector3(1,2,1), 1, vector2(0.5,0.5),
-		     6, vector2(0.5,0.5),
-		     vector3(0,0,0), DENSITY, ann );
-
-  initializeAnn(&ann);
-  m2 = new morf_node(vector3(1,0.5,0.5), 5, vector2(0.5,0.5),
-		     3, vector2(0.5,0.5),
-		     vector3(0,0,0), DENSITY, ann );
-  m1->subnodes.push_back( m2 );
-
-
-  initializeAnn(&ann);
-  m3 = new morf_node(vector3(1,0.5,0.5), 3, vector2(0.5,0.5),
-		     4, vector2(0.5,0.5),
-		     vector3(0,0,0), DENSITY, ann );
-
-  m1->subnodes.push_back( m3 );
-  return m1;
-  */
-  /*
-  m[0] = new morf_node();
-  initializeNode(m[0]);
-  
-  m[1] = new morf_node();    
-  initializeNode(m[1]);
-  m[0]->subnodes.push_back( m[1] );
-
-  m[2] = new morf_node();
-  initializeNode(m[2]);
-  m[1]->subnodes.push_back( m[2] );
-  
-  m[3] = new morf_node();
-  initializeNode(m[3]);
-  m[0]->subnodes.push_back( m[3] );*/
-  
-
-
-
-
-
-
-
   int numNodes = MINNODES + (int)((MAXNODES-MINNODES+1) * (rand() / ((double)RAND_MAX + 1.0)));
 
   return createRandomMorfAux( &numNodes );
