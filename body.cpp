@@ -4,12 +4,22 @@
 
 #define SPC 0.5
 
+#define SP( a, b )  (pow(2,(a+b)))
+
 substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vector3 p_rot, dMatrix3 p_MatRot, vector3* attach_pos, vector3* axis1, vector3* axis2 ){
   substratum* obj_p;
   substratum* obj_c;
 
   vector3 l_pos, l_rot;
   vector3 pos_m, att_m;
+
+
+
+  vector3 rsize = mnode->size;
+  rsize = rsize.rotate( vector3(0,0,1), p_rot.z+mnode->rot.z );
+  rsize = rsize.rotate( vector3(0,1,0), p_rot.y+mnode->rot.y );
+  rsize = rsize.rotate( vector3(1,0,0), p_rot.x+mnode->rot.x );
+
 
   switch( mnode->face ){
   case 1 : 
@@ -27,7 +37,6 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 
     (*axis1) = vector3( 0,0,1);
     (*axis2) = vector3( -1,0,0);
-
     break;
   case 6 : 
     att_m = vector3( 
@@ -45,7 +54,6 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 
     (*axis1) = vector3( 0,0,1);
     (*axis2) = vector3( 1,0,0);
-
     break;
   case 3 :
     att_m = vector3( p_size.x + SPC/2,
@@ -62,7 +70,6 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 
     (*axis1) = vector3( 0,0,1);
     (*axis2) = vector3( 0,-1,0);
-
     break;
   case 5 :
     att_m = vector3( -p_size.x - SPC/2,
@@ -78,8 +85,6 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 
     (*axis1) = vector3( 0,0,1);
     (*axis2) = vector3( 0,1,0);
-
-
     break;
   case 2 : 
     att_m = vector3( ( 2*p_size.x * (mnode->pos.x-0.5)), 
@@ -96,8 +101,6 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 
     (*axis1) = vector3( 1,0,0);
     (*axis2) = vector3( 0,1,0);
-
-
     break;
   case 4 :
     att_m = vector3( ( 2*p_size.x * (mnode->pos.x-0.5)), 
@@ -114,33 +117,81 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 
     (*axis1) = vector3( -1,0,0);
     (*axis2) = vector3( 0,1,0);
-
     break;
   }
 
-  pos_m = pos_m.rotate( vector3(1,0,0), p_rot.x );
-  pos_m = pos_m.rotate( vector3(0,1,0), p_rot.y );
-  pos_m = pos_m.rotate( vector3(0,0,1), p_rot.z );
 
-  att_m = att_m.rotate( vector3(1,0,0), p_rot.x );
-  att_m = att_m.rotate( vector3(0,1,0), p_rot.y );
-  att_m = att_m.rotate( vector3(0,0,1), p_rot.z );
-
-  l_pos = p_pos + pos_m;
-  (*attach_pos) = p_pos + att_m;
 
   l_rot = mnode->rot + p_rot;
+  
+  //pos_m = pos_m.rotate( vector3(0,1,0), mnode->rot.y+p_rot.y );
+
+
+
+
+  
+
+  pos_m = pos_m - att_m;
+  pos_m = pos_m.rotate( vector3(0,0,1), mnode->rot.z );  
+  pos_m = pos_m.rotate( vector3(0,1,0), mnode->rot.y );  
+  pos_m = pos_m.rotate( vector3(1,0,0), mnode->rot.x );  
+  pos_m = pos_m + att_m;
+
+  pos_m = pos_m.rotate( vector3(0,0,1), p_rot.z );  
+  pos_m = pos_m.rotate( vector3(0,1,0), p_rot.y );  
+  pos_m = pos_m.rotate( vector3(1,0,0), p_rot.x );  
+  l_pos = p_pos + pos_m;
+
+
+  att_m = att_m.rotate( vector3(0,0,1), p_rot.z );
+  att_m = att_m.rotate( vector3(0,1,0), p_rot.y );
+  att_m = att_m.rotate( vector3(1,0,0), p_rot.x );
+
+  (*attach_pos) = p_pos + att_m;
+
+
+  (*axis1) = (*axis1).rotate( vector3(0,0,1), p_rot.z );
+  (*axis1) = (*axis1).rotate( vector3(0,1,0), p_rot.y );
+  (*axis1) = (*axis1).rotate( vector3(1,0,0), p_rot.x );
+  
+  (*axis2) = (*axis2).rotate( vector3(0,0,1), p_rot.z );
+  (*axis2) = (*axis2).rotate( vector3(0,1,0), p_rot.y );
+  (*axis2) = (*axis2).rotate( vector3(1,0,0), p_rot.x );
+  
+  
+  printf(" %f %f %f : %f %f %f\n",  p_rot.x, p_rot.y, p_rot.z, (*axis2).x, (*axis2).y, (*axis2).z);
+
+  static int fu = 0;fu++;
+  if( fu == 3 ){
+    //l_pos = (*attach_pos);
+    //mnode->rot = vector3( (PI/2)*(*axis2).x, (PI/2)*(*axis2).z, (PI/2)*(*axis2). );
+  }
+
+  //-- Calculate YPOS
+    float yPos = 0;
+    vector3 ysize = mnode->size + vector3(2*SPC,2*SPC,2*SPC);
+    ysize = ysize.rotate( vector3(0,0,1), p_rot.z );
+    ysize = ysize.rotate( vector3(0,1,0), p_rot.y );
+    ysize = ysize.rotate( vector3(1,0,0), p_rot.x );
+    yPos = l_pos.y - ysize.y;
+    if( yPos < init_yPos )
+      init_yPos = yPos;
+  //--
+
+
 
   //-- Calc Rotation Matrix
     dMatrix3 Rx, Ry, Rz, A, B, C, I;
 
     dRSetIdentity( I );
 
+    dRSetIdentity( Rx );
     dRFromAxisAndAngle(Rx, 1, 0, 0, mnode->rot.x);
     dRFromAxisAndAngle(Ry, 0, 1, 0, mnode->rot.y);
     dRFromAxisAndAngle(Rz, 0, 0, 1, mnode->rot.z);
 
-    dMultiply0( A, p_MatRot, Rx, 3, 3, 3 );
+    dRSetIdentity(A);
+    //dMultiply0( A, p_MatRot, Rx, 3, 3, 3 );
     dMultiply0( B, A, Ry, 3, 3, 3 );  
     dMultiply0( C, B, Rz, 3, 3, 3 );
   //--
@@ -151,16 +202,6 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
   bodyParts.push_back( obj_p );
 
 
-  //-- Calculate YPOS
-    float yPos = 0;
-    vector3 rsize = mnode->size + vector3(2*SPC,2*SPC,2*SPC);
-    rsize = rsize.rotate( vector3(0,0,1), p_rot.z );
-    rsize = rsize.rotate( vector3(0,1,0), p_rot.y );
-    rsize = rsize.rotate( vector3(1,0,0), p_rot.x );
-    yPos = l_pos.y - rsize.y;
-    if( yPos < init_yPos )
-      init_yPos = yPos;
-  //--
 
 
   int size = mnode->subnodes.size();
@@ -344,7 +385,7 @@ float body::run( int time ){
 
 #ifdef DEBUG
       static double fu = 0;
-      fu += 0.05;
+      fu += 0.005;
       dJointAddUniversalTorques( bodyParts[i]->jid, 300*sin(fu), 300*cos(fu));
 #else
       dJointAddUniversalTorques( bodyParts[i]->jid, bodyParts[i]->force1, bodyParts[i]->force2);

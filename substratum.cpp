@@ -14,9 +14,9 @@ substratum::substratum( dWorldID world, dSpaceID space, vector3 size, vector3 po
   force1 = force2 = 0;
 
   dMatrix3 A, B, C, I, Rx, Ry, Rz;
-  dRFromAxisAndAngle(Rx, 1, 0, 0, rot.x);
-  dRFromAxisAndAngle(Ry, 0, 1, 0, rot.y);
   dRFromAxisAndAngle(Rz, 0, 0, 1, rot.z);
+  dRFromAxisAndAngle(Ry, 0, 1, 0, rot.y);
+  dRFromAxisAndAngle(Rx, 1, 0, 0, rot.x);
 
   dRFromAxisAndAngle(I, 1, 0, 0, 0);
 
