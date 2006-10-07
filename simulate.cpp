@@ -139,7 +139,7 @@ void simulate::collideCallback (void *data, dGeomID o1, dGeomID o2)
   float lvf = sqrt(lv[0]*lv[0] + lv[1]*lv[1] + lv[2]*lv[2]);
 
   //float p = pow(2,(lvf/5)) -3;
-  float p = pow(2,(lvf/4)) -2;
+  float p = pow(2,(lvf/10)) -5;
 
   if( p < 0 ) p = 0;
   

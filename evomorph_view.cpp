@@ -31,10 +31,14 @@ void show( simulate* sim, body* creature, gui* g ){
 
     
 
+#ifdef DEBUG
     if( g->slow ){
+#endif
       creature->run( totalSteps );
       sim->step();
+#ifdef DEBUG
     }
+#endif
     totalSteps++;
   }
 

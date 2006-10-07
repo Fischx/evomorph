@@ -159,13 +159,6 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
   (*axis2) = (*axis2).rotate( vector3(1,0,0), p_rot.x );
   
   
-  printf(" %f %f %f : %f %f %f\n",  p_rot.x, p_rot.y, p_rot.z, (*axis2).x, (*axis2).y, (*axis2).z);
-
-  static int fu = 0;fu++;
-  if( fu == 3 ){
-    //l_pos = (*attach_pos);
-    //mnode->rot = vector3( (PI/2)*(*axis2).x, (PI/2)*(*axis2).z, (PI/2)*(*axis2). );
-  }
 
   //-- Calculate YPOS
     float yPos = 0;
