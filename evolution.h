@@ -17,7 +17,7 @@
 
 
 #define N_POP    30   /* 1-generation population size */
-#define BEST     10    /*  how many of the bests go to next gen at selectMix  */
+#define BEST     10   /*  how many of the bests go to next gen at selectMix  */
 #define WORST    0    /*  how many of the worsts go to next gen at selectMix */
 /*  how many one should fight in selectLongPairwise    */
 #define OPPONENTS (int) ceil(0.3 * N_POP)

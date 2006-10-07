@@ -76,7 +76,7 @@ float simulate::getFitness( body* creature ){
       oldpos = creaturePos;
     }
 
-    creature->run( totalSteps );
+    fitness -= creature->run( totalSteps );
     collision_depth = 0;
     this->step();
     if( collision_depth > 1 )
@@ -119,6 +119,39 @@ void simulate::collideCallback (void *data, dGeomID o1, dGeomID o2)
   b1 = dGeomGetBody(o1);
   b2 = dGeomGetBody(o2);
 
+  dReal zero[3] = {0,0,0};
+  dReal* linVel1, *linVel2;
+  dReal lv[3];
+  if( b1 == 0 )
+    linVel1 = zero;
+  else
+    linVel1 = (dReal*)dBodyGetLinearVel  (b1);
+
+  if( b2 == 0 )
+    linVel2 = zero;
+  else
+    linVel2 = (dReal*)dBodyGetLinearVel  (b2);
+
+  lv[0] = linVel1[0]-linVel2[0];
+  lv[1] = linVel1[1]-linVel2[1];
+  lv[2] = linVel1[2]-linVel2[2];
+
+  float lvf = sqrt(lv[0]*lv[0] + lv[1]*lv[1] + lv[2]*lv[2]);
+
+  //float p = pow(2,(lvf/5)) -3;
+  float p = pow(2,(lvf/4)) -2;
+
+  if( p < 0 ) p = 0;
+  
+
+  collision_depth += p;
+    
+  //#ifdef DEBUG
+  //static int fu2 = 0;
+  //printf("%d %f %f\n", fu2, lvf, p );fflush(stdout);
+  //fu2++;
+  //#endif
+  
 
 
   floor = 0;
