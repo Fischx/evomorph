@@ -21,7 +21,7 @@ void show( simulate* sim, body* creature, gui* g ){
 
   g->setCamera((vector3(0.f,-15.f,-15.f) - creature->getPos()), vector3(45.f,0.f,0.f) );
 
-  while( g->show ){
+  while( g->show && g->wantQuit == false ){
 
     g->setCreaturePos( creature->getPos() );
 
@@ -110,6 +110,10 @@ int main( int argc, char **argv )
 #else
   for( int i=0; i < N_POP; i++){
     body* phen;
+
+    if( g->wantQuit )
+      break;
+
 
     mnode = new morf_node();
     mnode->readTree(mnode, fd);

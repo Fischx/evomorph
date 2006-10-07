@@ -285,7 +285,6 @@ float body::run( int time ){
 	max_rate = MAX_RATE(vol1);
       }
 
-      /* RATE CONTROL
       if( f1 > 0 ){
 	if( f1 > max_rate )
 	  f1 = max_rate;
@@ -301,13 +300,11 @@ float body::run( int time ){
 	if( f2 < -max_rate )
 	  f2 = -max_rate;
       }
-      */
 
       bodyParts[i]->force1 += f1;
       bodyParts[i]->force2 += f2;
 
 
-      /* FORCE CONTROL
       if( bodyParts[i]->force1 > 0 ){
 	if( bodyParts[i]->force1 > max_force )
 	  bodyParts[i]->force1 = max_force;
@@ -323,7 +320,6 @@ float body::run( int time ){
 	if( bodyParts[i]->force2 < -max_force )
 	  bodyParts[i]->force2 = -max_force;
       }
-      */
 
 
 

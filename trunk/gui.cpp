@@ -687,10 +687,7 @@ void gui::handleKeys(){
   }
 
   if( keyboard[SDLK_ESCAPE] ){
-    if( !show )
-      wantQuit = true;
-    else
-      show = false;
+    wantQuit = true;
   }
 
 
