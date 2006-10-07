@@ -1,5 +1,6 @@
 CC=g++
-CFLAGS=-c -Wall `sdl-config --cflags ` -O3 -DDEBUG
+CFLAGS=-c -Wall `sdl-config --cflags ` -O3
+# -DDEBUG
 #-ggdb
 
 LDFLAGS= -lode #-lGL -lGLU `sdl-config --cflags --libs`
