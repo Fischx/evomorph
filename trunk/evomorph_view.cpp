@@ -29,8 +29,12 @@ void show( simulate* sim, body* creature, gui* g ){
 
     g->drawScene( &creature->bodyParts );
 
-    creature->run( totalSteps );
-    sim->step();
+    
+
+    if( g->slow ){
+      creature->run( totalSteps );
+      sim->step();
+    }
     totalSteps++;
   }
 
@@ -51,23 +55,23 @@ morf_node* initDebugGen(){
   morf_node *m1, *m2, *m3;
 
   //initializeAnn(&ann);
-  m1 = new morf_node(vector3(1,2,1), 1, vector2(0.5,0.5),
+  m1 = new morf_node(vector3(1,1,1), 1, vector2(0.5,0.5),
 		     6, vector2(0.5,0.5),
 		     vector3(0,0,0), DENSITY, ann );
 
   //initializeAnn(&ann);
-  m2 = new morf_node(vector3(1,0.5,0.5), 5, vector2(0.5,0.5),
-		     3, vector2(0.5,0.5),
-		     vector3(0,0,0), DENSITY, ann );
+  m2 = new morf_node(vector3(1,0.5,1.5), 3, vector2(0.5,0.5),
+		     6, vector2(0.5,0.5),
+		     vector3(0*PI/6,-PI/4,PI/4), DENSITY, ann );
   m1->subnodes.push_back( m2 );
 
 
   //initializeAnn(&ann);
-  m3 = new morf_node(vector3(1,0.5,0.5), 3, vector2(0.5,0.5),
-		     4, vector2(0.5,0.5),
+  m3 = new morf_node(vector3(2,0.5,0.5), 3, vector2(0.5,0.5),
+		     5, vector2(0.5,0.5),
 		     vector3(0,0,0), DENSITY, ann );
 
-  m1->subnodes.push_back( m3 );
+  m2->subnodes.push_back( m3 );
   return m1;
 }
 #endif
