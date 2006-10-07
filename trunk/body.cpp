@@ -248,14 +248,19 @@ float body::run( int time ){
 
       input[0] = dJointGetUniversalAngle1(bodyParts[i]->jid);
       input[1] = dJointGetUniversalAngle2(bodyParts[i]->jid);
-      input[2] = bodyParts[i]->collide;
-      input[3] = sin(time*PI/(double)20);
+      input[2] = bodyParts[i]->collide_floor;
+      input[3] = bodyParts[i]->collide_body;
+
+      bodyParts[i]->collide_floor = false;
+      bodyParts[i]->collide_body = false;
+
+      input[4] = sin(time*PI/(double)20);
       
       const dReal *R = dGeomGetRotation( bodyParts[i]->geom);
 
-      input[4] = atan2( R[6], R[5] );
-      input[5] = atan2( R[8], R[0] );
-      input[6] = atan2( R[1], R[0] );
+      input[5] = atan2( R[6], R[5] );
+      input[6] = atan2( R[8], R[0] );
+      input[7] = atan2( R[1], R[0] );
 
 
       bodyParts[i]->nn->Run( input, output );

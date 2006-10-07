@@ -29,7 +29,8 @@ class substratum
 
   void getRateFactor( float rateFactor[2] );
 
-  bool collide;
+  bool collide_floor;
+  bool collide_body;
 
 
   dBodyID body;  /* the dynamics body */

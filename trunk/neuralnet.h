@@ -13,7 +13,7 @@
 
 
 /* number of input layer nodes */
-#define INPUT_LAYER 7
+#define INPUT_LAYER 8
 
 /* number of output layer nodes */
 #define OUTPUT_LAYER 2
@@ -22,7 +22,7 @@
 #define MIDDLE_LAYER 10
 
 /* number of middle layers */
-#define N_MIDDLE_LAYERS 5
+#define N_MIDDLE_LAYERS 1
 
 /* number of connections in the neural netkwork*/
 #define NN_SIZE (((INPUT_LAYER + OUTPUT_LAYER) * MIDDLE_LAYER) + \

@@ -63,7 +63,8 @@ substratum::substratum( dWorldID world, dSpaceID space, vector3 size, vector3 po
   dGeomSetBody( this->geom, this->body );
 
 
-  collide = false;
+  collide_floor = false;
+  collide_body = false;
   hasJoint = false;
 
   nn = new cNeuralNet( ann_genotype );

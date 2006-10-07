@@ -488,9 +488,6 @@ void gui::drawSubstratum( substratum* obj )
   const dReal* rot;
 
 
-
-  obj->collide = false;
-
   if (!obj->geom)
     return;
 

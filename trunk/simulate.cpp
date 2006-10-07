@@ -173,13 +173,17 @@ void simulate::collideCallback (void *data, dGeomID o1, dGeomID o2)
 	  if( dGeomGetClass(o1) == dBoxClass ){ // It is a substratum
 	    subs1 = (substratum*) dBodyGetData(b1);
 	    if( dGeomGetClass(o2) == dPlaneClass )
-	      subs1->collide = true;
+	      subs1->collide_floor = true;
+	    else
+	      subs1->collide_body = true;
 	  }
 
 	  if( dGeomGetClass(o2) == dBoxClass ){ // It is a substratum
 	    subs1 = (substratum*) dBodyGetData(b2);
 	    if( dGeomGetClass(o1) == dPlaneClass )
-	      subs1->collide = true;
+	      subs1->collide_floor = true;
+	    else
+	      subs1->collide_body = true;
 	  }
 	  
 	  //if( !(dGeomGetClass(o1) == dBoxClass && dGeomGetClass(o2) == dBoxClass ))
