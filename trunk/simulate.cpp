@@ -66,6 +66,12 @@ float simulate::getFitness( body* creature ){
     creaturePos = creature->getPos();
 
     if( totalSteps > WAIT_STEPS ){
+      if( totalSteps < WAIT_STEPS+INC_STEPS ){
+	newpos = creaturePos;
+	fitness = fitness + newpos.dist( &oldpos );
+	oldpos = newpos;
+      }
+
       if( fitSteps >= FITNESS_STEPS ){
 	newpos = creaturePos;
 	fitness = fitness + newpos.dist( &oldpos );
@@ -84,7 +90,7 @@ float simulate::getFitness( body* creature ){
     this->step();
 
     if( totalSteps > WAIT_STEPS )
-      if( collision_depth > 1 )
+      if( collision_depth > 0.5 )
 	fitness -= collision_depth;
       
 
