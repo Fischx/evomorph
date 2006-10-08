@@ -27,7 +27,7 @@
 #define TOTAL_STEPS 10000
 #define FITNESS_STEPS ((TOTAL_STEPS/2)-1)
 #define WAIT_STEPS (TOTAL_STEPS/5)
-#define INC_STEPS (TOTAL_STEPS/10)
+#define INC_STEPS (100)
 
 
 class simulate
