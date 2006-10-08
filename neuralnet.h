@@ -13,13 +13,13 @@
 
 
 /* number of input layer nodes */
-#define INPUT_LAYER 8
+#define INPUT_LAYER 9
 
 /* number of output layer nodes */
 #define OUTPUT_LAYER 2
 
 /* number of middle layer nodes */
-#define MIDDLE_LAYER 10
+#define MIDDLE_LAYER 16
 
 /* number of middle layers */
 #define N_MIDDLE_LAYERS 1

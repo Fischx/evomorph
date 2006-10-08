@@ -1,6 +1,6 @@
 
 #include "evolution.h"
-
+#include "global.h"
 
 /*
  *  Abramowitz and Stegun method for Normal random number
@@ -601,16 +601,22 @@ void evolution::mutateBox(const morf_node* father, morf_node* child )
     normal_i = gaussrand();
     child->rot_variance.x = father->rot_variance.x * exp( (TAU4 * normal) + (TAU3 * normal_i) );
     child->rot.x = father->rot.x + (child->rot_variance.x * normal_i);
+    if( child->rot.x > ROT_MAX ) child->rot.x = ROT_MAX;
+    if( child->rot.x < -ROT_MAX ) child->rot.x = -ROT_MAX;
 
     /* y */
     normal_i = gaussrand();
     child->rot_variance.y = father->rot_variance.y * exp( (TAU4 * normal) + (TAU3 * normal_i) );
     child->rot.y = father->rot.y + (child->rot_variance.y * normal_i);
+    if( child->rot.y > ROT_MAX ) child->rot.y = ROT_MAX;
+    if( child->rot.y < -ROT_MAX ) child->rot.y = -ROT_MAX;
 
     /* z */
     normal_i = gaussrand();
     child->rot_variance.z = father->rot_variance.z * exp( (TAU4 * normal) + (TAU3 * normal_i) );
     child->rot.z = father->rot.z + (child->rot_variance.z * normal_i);
+    if( child->rot.z > ROT_MAX ) child->rot.z = ROT_MAX;
+    if( child->rot.z < -ROT_MAX ) child->rot.z = -ROT_MAX;
     
     //printf("ok\n");
   }
