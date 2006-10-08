@@ -4,7 +4,6 @@
 
 #define SPC 0.5
 
-#define SP( a, b )  (pow(2,(a+b)))
 
 substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vector3 p_rot, dMatrix3 p_MatRot, vector3* attach_pos, vector3* axis1, vector3* axis2 ){
   substratum* obj_p;
@@ -272,7 +271,6 @@ float body::run( int time ){
   double output[OUTPUT_LAYER];
 
   float f1, f2;
-  float penalty;
 
   for( int i = 0; i < size; i++ ){
     if( bodyParts[i]->hasJoint ){
@@ -289,13 +287,14 @@ float body::run( int time ){
       bodyParts[i]->collide_floor = false;
       bodyParts[i]->collide_body = false;
 
-      input[4] = sin(time*PI/(double)20);
+      input[4] = sin(time*PI/(double)30);
+      input[5] = cos(time*PI/(double)30);
       
       const dReal *R = dGeomGetRotation( bodyParts[i]->geom);
 
-      input[5] = atan2( R[6], R[5] );
-      input[6] = atan2( R[8], R[0] );
-      input[7] = atan2( R[1], R[0] );
+      input[6] = atan2( R[6], R[5] );
+      input[7] = atan2( R[8], R[0] );
+      input[8] = atan2( R[1], R[0] );
 
 
       bodyParts[i]->nn->Run( input, output );
@@ -387,7 +386,7 @@ float body::run( int time ){
     }
   }
 
-  return penalty;
+  return 0;
 }
 
 

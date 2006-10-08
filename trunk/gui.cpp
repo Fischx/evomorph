@@ -21,7 +21,7 @@ using namespace std;
 gui::gui()
 {
 
-  this->slow = false;
+  this->slow = true;
   this->show = true;
   isActive = true;
   wantQuit = false;
@@ -180,8 +180,11 @@ void gui::initGL( GLvoid )
   /* Enable smooth shading */
   glShadeModel( GL_SMOOTH );
 
+  glLineWidth( 1 );
+
   /* Set the background black */
-  glClearColor( 0.7f, 0.8f, 1.0f, 0.0f );
+  //glClearColor( 0.7f, 0.8f, 1.0f, 0.0f );
+  glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );
 
   /* Depth buffer setup */
   glClearDepth( 1.0f );
@@ -195,6 +198,23 @@ void gui::initGL( GLvoid )
 
   /* Really Nice Perspective Calculations */
   glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+
+
+
+  //glEnable( GL_LIGHTING );
+  GLfloat LightAmbient[]= { 0.6f, 0.6f, 0.6f, 1.0f };// Ambient Light Values
+  GLfloat LightDiffuse[]= { 0.5f, 0.5f, 0.5f, 1.0f };// Diffuse Light Values
+  GLfloat LightPosition[]= { 30.f, 100.0f, 30.f, 1.0f };// Light Position
+  glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);// Setup The Ambient Light
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);// Setup The Diffuse Light
+  glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);// Position The Light
+
+  //glEnable(GL_LIGHT1);// Enable Light One
+
+
+  //glEnable(GL_COLOR_MATERIAL);
+  //glColorMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE);
+  //glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT);
 
 }
 
@@ -212,44 +232,62 @@ GLuint gui::createBox()
   
 
   glBegin(GL_QUADS);		/* Draw The Cube Using quads */
+
+
+
     glColor3f(0.0f,1.0f,0.0f);	/* Color Blue */
+    glNormal3f(0, 1, 0);
     glVertex3f( 1.0f, 1.0f,-1.0f);	/* Top Right Of The Quad (Top) */
     glVertex3f(-1.0f, 1.0f,-1.0f);	/* Top Left Of The Quad (Top) */
     glVertex3f(-1.0f, 1.0f, 1.0f);	/* Bottom Left Of The Quad (Top) */
     glVertex3f( 1.0f, 1.0f, 1.0f);	/* Bottom Right Of The Quad (Top) */
+
     glColor3f(1.0f,0.5f,0.0f);	/* Color Orange */
+    glNormal3f(0, -1, 0);
     glVertex3f( 1.0f,-1.0f, 1.0f);	/* Top Right Of The Quad (Bottom) */
     glVertex3f(-1.0f,-1.0f, 1.0f);	/* Top Left Of The Quad (Bottom) */
     glVertex3f(-1.0f,-1.0f,-1.0f);	/* Bottom Left Of The Quad (Bottom) */
     glVertex3f( 1.0f,-1.0f,-1.0f);	/* Bottom Right Of The Quad (Bottom) */
+
     glColor3f(1.0f,0.0f,0.0f);	/* Color Red	 */
+    glNormal3f(0, 0, 1);
     glVertex3f( 1.0f, 1.0f, 1.0f);	/* Top Right Of The Quad (Front) */
     glVertex3f(-1.0f, 1.0f, 1.0f);	/* Top Left Of The Quad (Front) */
     glVertex3f(-1.0f,-1.0f, 1.0f);	/* Bottom Left Of The Quad (Front) */
     glVertex3f( 1.0f,-1.0f, 1.0f);	/* Bottom Right Of The Quad (Front) */
+
     glColor3f(1.0f,1.0f,0.0f);	/* Color Yellow */
+    glNormal3f(0, 0, -1);
     glVertex3f( 1.0f,-1.0f,-1.0f);	/* Top Right Of The Quad (Back) */
     glVertex3f(-1.0f,-1.0f,-1.0f);	/* Top Left Of The Quad (Back) */
     glVertex3f(-1.0f, 1.0f,-1.0f);	/* Bottom Left Of The Quad (Back) */
     glVertex3f( 1.0f, 1.0f,-1.0f);	/* Bottom Right Of The Quad (Back) */
+
     glColor3f(0.0f,0.0f,1.0f);	/* Color Blue */
+    glNormal3f(-1, 0, 0);
     glVertex3f(-1.0f, 1.0f, 1.0f);	/* Top Right Of The Quad (Left) */
     glVertex3f(-1.0f, 1.0f,-1.0f);	/* Top Left Of The Quad (Left) */
     glVertex3f(-1.0f,-1.0f,-1.0f);	/* Bottom Left Of The Quad (Left) */
     glVertex3f(-1.0f,-1.0f, 1.0f);	/* Bottom Right Of The Quad (Left) */
+
+
     glColor3f(1.0f,0.0f,1.0f);	/* Color Violet */
+    glNormal3f(1, 0, 0);
     glVertex3f( 1.0f, 1.0f,-1.0f);	/* Top Right Of The Quad (Right) */
     glVertex3f( 1.0f, 1.0f, 1.0f);	/* Top Left Of The Quad (Right) */
     glVertex3f( 1.0f,-1.0f, 1.0f);	/* Bottom Left Of The Quad (Right) */
     glVertex3f( 1.0f,-1.0f,-1.0f);	/* Bottom Right Of The Quad (Right) */
   glEnd();			/* End Drawing The Cube */
 
+
+ 
 
   glPolygonMode( GL_BACK, GL_LINE );
   glPolygonMode( GL_FRONT, GL_LINE );
+  glDisable( GL_LIGHTING );
 
   glBegin(GL_QUADS);		/* Draw The Cube Using quads */
-    glColor3f(0.0f,0.0f,0.0f);	/* Color Blue */
+    glColor4f(0.0f,0.0f,0.0f,0.8f);	/* Color Blue */
     glVertex3f( 1.0f, 1.0f,-1.0f);	/* Top Right Of The Quad (Top) */
     glVertex3f(-1.0f, 1.0f,-1.0f);	/* Top Left Of The Quad (Top) */
     glVertex3f(-1.0f, 1.0f, 1.0f);	/* Bottom Left Of The Quad (Top) */
@@ -276,6 +314,7 @@ GLuint gui::createBox()
     glVertex3f( 1.0f,-1.0f,-1.0f);	/* Bottom Right Of The Quad (Right) */
   glEnd();			/* End Drawing The Cube */
 
+  //glEnable( GL_LIGHTING );
   glPolygonMode( GL_BACK, GL_FILL );
   glPolygonMode( GL_FRONT, GL_FILL );
 
@@ -291,6 +330,8 @@ GLuint gui::createBox()
   //glPolygonMode( GL_BACK, GL_FILL );
   //glPolygonMode( GL_FRONT, GL_POINT );
   glCullFace(GL_FRONT);
+
+  glDisable( GL_LIGHTING );
 
   glBegin(GL_QUADS);		/* Draw The Cube Using quads */
     glColor4f(0,0,0,0.5f);	/* Color Blue */
@@ -326,6 +367,7 @@ GLuint gui::createBox()
     
   glEnd();
 
+  //glEnable( GL_LIGHTING );
   glCullFace(GL_BACK);
 
   //glPolygonMode( GL_BACK, GL_NONE );
@@ -367,8 +409,13 @@ void gui::createFloor()
     glTexImage2D(GL_TEXTURE_2D, 0, 3, temp->w, temp->h, 0, GL_BGR, GL_UNSIGNED_BYTE, temp->pixels);
  
     //Use nearest filtering, very good
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   } else {
     return;
   }    
@@ -386,9 +433,10 @@ void gui::createFloor()
   //Make certain everything is cleared from the screen before we draw to it
   //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
  
+  glDisable( GL_LIGHTING );
   //Enable texturing
   glEnable(GL_TEXTURE_2D);
- 
+
   //Load the texture
   glBindTexture(GL_TEXTURE_2D, texFloor);
  
@@ -417,7 +465,8 @@ void gui::createFloor()
  
   //Disable texturing
   glDisable(GL_TEXTURE_2D);
-  
+  //glEnable( GL_LIGHTING );
+
   glEndList();
 
 

@@ -29,17 +29,17 @@ void show( simulate* sim, body* creature, gui* g ){
 
     g->drawScene( &creature->bodyParts );
 
-    
-
-#ifdef DEBUG
+    //#ifdef DEBUG
     if( g->slow ){
-#endif
+      //#endif
       creature->run( totalSteps );
       sim->step();
-#ifdef DEBUG
+      //#ifdef DEBUG
     }
-#endif
+    //#endif
     totalSteps++;
+
+
   }
 
 }
@@ -96,7 +96,7 @@ int main( int argc, char **argv )
   gui* g;
   int minFit = -12345;
   int go = -1;
-
+  bool dontGetFit = false;
   fd = 0;
   for( int i=1; i<argc; i++ ){
     if( !strcmp(argv[i], "-m") ){
@@ -124,6 +124,10 @@ int main( int argc, char **argv )
 	printUsage(argv[0]);
       go = atoi(argv[i+1]);
       i++;
+    }
+
+    if( !strcmp(argv[i], "-n") ){
+      dontGetFit = true;
     }
 
 
@@ -169,7 +173,8 @@ int main( int argc, char **argv )
 
     if( go == -1 || i >= go ){
       phen = new body( sim->World, sim->Space, mnode );
-      fit = sim->getFitness( phen );
+      if( !dontGetFit )
+	fit = sim->getFitness( phen );
       printf("Creature %d Fitness = %f \n", i, fit  );
       delete phen;
   

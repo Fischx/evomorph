@@ -16,8 +16,8 @@
 #define TAU4     1/(sqrt(2 * NN_SIZE))
 
 
-#define N_POP    30   /* 1-generation population size */
-#define BEST     10   /*  how many of the bests go to next gen at selectMix  */
+#define N_POP    5   /* 1-generation population size */
+#define BEST     1   /*  how many of the bests go to next gen at selectMix  */
 #define WORST    0    /*  how many of the worsts go to next gen at selectMix */
 /*  how many one should fight in selectLongPairwise    */
 #define OPPONENTS (int) ceil(0.3 * N_POP)
@@ -43,7 +43,9 @@
 #define SIZE_VARIANCE_INIT_MAX    1.0
 #define POS_INIT_MAX              0.9999
 #define POS_VARIANCE_INIT_MAX     0.3
-#define ROT_VARIANCE_INIT_MAX     0.01
+#define ROT_VARIANCE_INIT_MAX     (PI/100)
+#define ROT_MAX                   (PI/4)
+
 
 #define DENSITY_INIT_MAX          10.0  /* not used yet, box density is fixed */
 #define DENSITY_VARIANCE_INIT_MAX 0.5   /* not used yet, box density is fixed */
