@@ -53,7 +53,8 @@ static float collision_depth = 0;
 float simulate::getFitness( body* creature ){
   int totalSteps = 0;
   int fitSteps = 0;
-  float fitness = 0;
+  double fitness = 0;
+  double penalty = 0;
 
   vector3 oldpos, newpos;
   vector3 eoldpos, enewpos, creaturePos;
@@ -91,11 +92,13 @@ float simulate::getFitness( body* creature ){
 
     if( totalSteps > WAIT_STEPS )
       if( collision_depth > 0.5 )
-	fitness -= collision_depth;
+	penalty += collision_depth;
       
 
     totalSteps++;
   }
+
+  fitness = fitness - fitness*(penalty/2000);
 
   return fitness;
 }
