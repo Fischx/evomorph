@@ -38,7 +38,7 @@ using namespace std;
 
 //#define MAX_FORCE(vol) ( 2*( 4*(vol*vol*vol) + 180*(vol*vol) +80*vol) + 100 )
 #define MAX_FORCE(vol) 40*(4*((3*(vol*vol*vol)+ 5*40*(vol*vol))/2) + 20)
-#define MAX_RATE(vol) (MAX_FORCE(vol)/(50*10)
+#define MAX_RATE(vol) (MAX_FORCE(vol)/(50*10))
 
 
 
