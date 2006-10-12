@@ -783,12 +783,12 @@ void evolution::mutateMorf_duplicate(morf_tree tree) {
 
 
 
-void evolution::mutateMorf_changeNN(morf_tree tree) {
+void evolution::mutateMorf_copyNN(morf_tree tree) {
   int pos, size, son_index;
   morf_tree duplicated_morf, dad, son, dad2, son2;
 
   /* Checks whether we should mutate this Morf at all  */
-  if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_MUTATE_MORF_CHANGE_NN)) return;
+  if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_MUTATE_MORF_COPY_NN)) return;
 
 
   size = tree->numNodes();
@@ -804,6 +804,94 @@ void evolution::mutateMorf_changeNN(morf_tree tree) {
   }
 
 }
+
+
+
+void evolution::crossoverMorf_simple(morf_tree A, morf_tree B) {
+  int a_pos, a_size, a_son_index;
+  morf_tree a_dad, a_son, a_dad2, a_son2;
+  int b_pos, b_size, b_son_index;
+  morf_tree b_dad, b_son, b_dad2, b_son2;
+
+  /* Checks whether we should mutate this Morf at all  */
+  if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_CROSSOVER_SIMPLE)) return;
+
+
+  a_size = A->numNodes();
+  if( a_size <= 1 ) return;
+  a_pos = 2 + (int)((a_size-1) * (double)rand()/(RAND_MAX+1.0));  
+
+  A->position(a_pos, &a_dad, &a_son, &a_son_index);
+  a_dad->subnodes.erase( a_dad->subnodes.begin() + a_son_index ); //remove the tree Son from Dad
+
+  
+
+  b_size = B->numNodes();
+  if( b_size <= 1 ) return;
+  b_pos = 2 + (int)((b_size-1) * (double)rand()/(RAND_MAX+1.0));  
+
+  B->position(b_pos, &b_dad, &b_son, &b_son_index);
+  b_dad->subnodes.erase( b_dad->subnodes.begin() + b_son_index ); //remove the tree Son from Dad
+
+
+
+
+  a_size = A->numNodes();
+  a_pos = 1 + (int)((a_size) * (double)rand()/(RAND_MAX+1.0));  
+
+  if( a_pos == 1 ){
+    A->subnodes.push_back( b_son ); //insert the removed tree at another place
+  }else{
+    A->position( a_pos, &a_dad2, &a_son2, &a_son_index);
+    a_son2->subnodes.push_back( b_son ); //insert the removed tree at another place
+  }
+
+
+
+  b_size = B->numNodes();
+  b_pos = 1 + (int)((b_size) * (double)rand()/(RAND_MAX+1.0));  
+
+  if( b_pos == 1 ){
+    B->subnodes.push_back( a_son ); //insert the removed tree at another place
+  }else{
+    B->position( b_pos, &b_dad2, &b_son2, &b_son_index);
+    b_son2->subnodes.push_back( a_son ); //insert the removed tree at another place
+  }
+  
+}
+
+
+void evolution::crossoverMorf_changeNN(morf_tree A, morf_tree B) {
+  int pos, size, son_index;
+  morf_tree  dad, son, dad2, son2;
+
+  /* Checks whether we should mutate this Morf at all  */
+  if(!((0 + (1.0*rand() / (RAND_MAX + 1.0))) <= PROB_CROSSOVER_CHANGE_NN)) return;
+
+
+  size = A->numNodes();
+  pos = 1 + (int)((size) * (double)rand()/(RAND_MAX+1.0));  
+  A->position( pos, &dad, &son, &son_index);
+
+  size = B->numNodes();
+  pos = 1 + (int)((size) * (double)rand()/(RAND_MAX+1.0));  
+  B->position(pos, &dad2, &son2, &son_index);
+  
+
+  for( int i=0; i < NN_SIZE; i++){
+    double w = son->ann.weight[i];
+    double v = son->ann.variance[i];
+
+    son->ann.weight[i] = son2->ann.weight[i];
+    son->ann.variance[i] = son2->ann.variance[i];
+
+    son2->ann.weight[i] = w;
+    son2->ann.variance[i] = v;
+
+  }
+
+}
+
 
 
 
@@ -1154,10 +1242,11 @@ void evolution::readConfig()
 void evolution::run(){
   int i;/*j;
           morf_node* m1, * m2, *m3;*/
-  int dad, mom, son1, son2;
-  double fit, lowerfit;
+
   char buf[64], msglog[1024];
   time_t now;
+
+
 
   time(&now);
   ctime_r(&now, buf);
@@ -1176,23 +1265,43 @@ gnuplot logging at %s\n",
   
   generation = 0;
   // do it:
-  
   while( 1 ){
-  
-    for(i=0; i< N_POP; i++){
 
-      pop[i+N_POP].body_gen = pop[i].body_gen->duplicate();
 
-      // Apply mutation operators
-      mutateBoxRecursive(pop[i].body_gen, pop[i+N_POP].body_gen);
-      mutateAnnRecursive(pop[i].body_gen, pop[i+N_POP].body_gen);
-      mutateMorf_cutAndPaste(pop[i+N_POP].body_gen);      
-      mutateMorf_delete(pop[i+N_POP].body_gen);
-      mutateMorf_create(pop[i+N_POP].body_gen);
-      mutateMorf_duplicate(pop[i+N_POP].body_gen);
-      mutateMorf_changeNN(pop[i+N_POP].body_gen);
+    for(i=0; i<N_POP; i++){
+      if( ((0 + (1.0*rand() / (RAND_MAX + 1.0))) <=  PROB_NEW_RANDOM ) && i<N_POP-1 ){
+	pop[i+N_POP].body_gen = createRandomMorf();
 
+      }else{
+	pop[i+N_POP].body_gen = pop[i].body_gen->duplicate();
+
+	// Apply mutation operators
+	mutateBoxRecursive(pop[i].body_gen, pop[i+N_POP].body_gen);
+	mutateAnnRecursive(pop[i].body_gen, pop[i+N_POP].body_gen);
+	mutateMorf_cutAndPaste(pop[i+N_POP].body_gen);      
+	mutateMorf_delete(pop[i+N_POP].body_gen);
+	mutateMorf_create(pop[i+N_POP].body_gen);
+	mutateMorf_duplicate(pop[i+N_POP].body_gen);
+	mutateMorf_copyNN(pop[i+N_POP].body_gen);
+      }
     }
+
+    // Crossover (only childs)
+    for(i=0; i<N_POP; i++){
+
+      // rand between N_POP and 2*N_POP-1
+      int father = N_POP + (int) (N_POP * (rand() / (RAND_MAX + 1.0)));
+      int father2 = N_POP + (int) (N_POP * (rand() / (RAND_MAX + 1.0)));
+
+      crossoverMorf_changeNN( pop[father].body_gen, pop[father2].body_gen );
+      
+      father = N_POP + (int) (N_POP * (rand() / (RAND_MAX + 1.0)));
+      father2 = N_POP + (int) (N_POP * (rand() / (RAND_MAX + 1.0)));
+
+      crossoverMorf_simple( pop[father].body_gen, pop[father2].body_gen );
+      
+    }
+
 
     getFitness( pop );
 
