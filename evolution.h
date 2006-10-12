@@ -71,7 +71,11 @@
 #define PROB_MUTATE_MORF_DELETE      0.01
 #define PROB_MUTATE_MORF_CREATE      0.1
 #define PROB_MUTATE_MORF_DUPLICATE   0.1
-#define PROB_MUTATE_MORF_CHANGE_NN   0.1
+#define PROB_MUTATE_MORF_COPY_NN     0.1
+
+#define PROB_CROSSOVER_SIMPLE        0.05
+#define PROB_CROSSOVER_CHANGE_NN     0.05
+#define PROB_NEW_RANDOM              0.05
 
 
 /* not recommended to mutate density!!! */
@@ -126,7 +130,10 @@ class evolution
   void mutateMorf_create(morf_tree tree);
 
   void mutateMorf_duplicate(morf_tree tree);
-  void mutateMorf_changeNN(morf_tree tree);
+  void mutateMorf_copyNN(morf_tree tree);
+
+  void crossoverMorf_simple(morf_tree A, morf_tree B);
+  void crossoverMorf_changeNN(morf_tree A, morf_tree B);
 
 
   /*
