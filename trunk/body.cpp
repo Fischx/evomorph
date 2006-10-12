@@ -12,12 +12,7 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
   vector3 l_pos, l_rot;
   vector3 pos_m, att_m;
 
-
-
-  vector3 rsize = mnode->size;
-  rsize = rsize.rotate( vector3(0,0,1), p_rot.z+mnode->rot.z );
-  rsize = rsize.rotate( vector3(0,1,0), p_rot.y+mnode->rot.y );
-  rsize = rsize.rotate( vector3(1,0,0), p_rot.x+mnode->rot.x );
+  static int fu = 0; fu++;
 
 
   switch( mnode->face ){
@@ -60,6 +55,7 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 		     -( 2*p_size.z * (mnode->pos.x-0.5))
 		     );
 
+
     pos_m = att_m + 
       vector3( mnode->size.x + SPC/2 , 
 	       ( 2*mnode->size.y * (mnode->self_pos.y-0.5)),
@@ -92,8 +88,8 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 		     );
 
     pos_m = att_m + 
-      vector3( ( 2*mnode->size.y * (mnode->self_pos.x-0.5)),
-	       ( 2*mnode->size.z * (mnode->self_pos.y-0.5)),
+      vector3( ( 2*mnode->size.x * (mnode->self_pos.x-0.5)),
+	       ( 2*mnode->size.y * (mnode->self_pos.y-0.5)),
 	       mnode->size.z + SPC/2 
 	       );
 
@@ -108,8 +104,8 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 		     );
 
     pos_m = att_m + 
-      vector3( ( 2*mnode->size.y * (mnode->self_pos.x-0.5)),
-	       ( 2*mnode->size.z * (mnode->self_pos.y-0.5)),
+      vector3( ( 2*mnode->size.x * (mnode->self_pos.x-0.5)),
+	       ( 2*mnode->size.y * (mnode->self_pos.y-0.5)),
 	       -mnode->size.z - SPC/2 
 	       );
 
@@ -124,7 +120,6 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
   l_rot = mnode->rot + p_rot;
   
   //pos_m = pos_m.rotate( vector3(0,1,0), mnode->rot.y+p_rot.y );
-
 
 
 
@@ -196,12 +191,13 @@ substratum* body::create( morf_node* mnode, vector3 p_pos, vector3 p_size, vecto
 
 
 
+
   int size = mnode->subnodes.size();
   for( int i =0; i < size; i++){
     vector3 localAttPos, laxis1, laxis2;
     obj_c = create( mnode->subnodes[i], l_pos, mnode->size, l_rot, C, &localAttPos, &laxis1, &laxis2 );
     obj_c->attach( obj_p, localAttPos, laxis1, laxis2 );
-    //obj_c->attach( obj_p );
+
   }
   
   return obj_p;
