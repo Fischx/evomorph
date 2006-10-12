@@ -89,6 +89,7 @@ void printUsage( const char* prog ){
 
 
 
+
 int main( int argc, char **argv )
 {
   FILE * fd;
@@ -145,7 +146,7 @@ int main( int argc, char **argv )
 
   sim = new simulate();
   g = new gui();
-  
+
 
 #ifdef DEBUG
 

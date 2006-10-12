@@ -183,8 +183,8 @@ void gui::initGL( GLvoid )
   glLineWidth( 1 );
 
   /* Set the background black */
-  //glClearColor( 0.7f, 0.8f, 1.0f, 0.0f );
-  glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );
+  glClearColor( 0.7f, 0.8f, 1.0f, 0.0f );
+  //glClearColor( 1.0f, 1.0f, 1.0f, 0.0f );
 
   /* Depth buffer setup */
   glClearDepth( 1.0f );
